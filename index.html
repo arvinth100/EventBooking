@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EventHub - Event Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #00b14f 0%, #00a1e4 100%);
+        }
+        .seat {
+            width: 30px;
+            height: 30px;
+            margin: 5px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 10px;
+            transition: all 0.2s;
+        }
+        .seat:hover {
+            transform: scale(1.1);
+        }
+        .seat-available {
+            background-color: #00b14f;
+            color: white;
+        }
+        .seat-booked {
+            background-color: #e53e3e;
+            color: white;
+        }
+        .seat-selected {
+            background-color: #3182ce;
+            color: white;
+            transform: scale(1.1);
+        }
+        .seat-vip {
+            background-color: #d69e2e;
+            color: white;
+        }
+        .hall-container {
+            background-color: #1a202c;
+            border-radius: 10px;
+            padding: 20px;
+            position: relative;
+        }
+        .screen {
+            width: 80%;
+            height: 20px;
+            background: linear-gradient(to bottom, #a0aec0, #718096);
+            margin: 0 auto 30px;
+            border-radius: 0 0 50px 50px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+        .custom-shadow {
+            box-shadow: 0 10px 25px -5px rgba(0, 177, 79, 0.2), 0 10px 10px -5px rgba(0, 177, 79, 0.04);
+        }
+        .event-card:hover {
+            transform: translateY(-5px);
+            transition: all 0.3s ease;
+        }
+        .event-card {
+            transition: all 0.3s ease;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="gradient-bg text-white shadow-lg">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-calendar-alt text-2xl"></i>
+                    <span class="text-xl font-bold">EventHub</span>
+                </div>
+                <div class="hidden md:flex space-x-6">
+                    <a href="#" class="hover:text-gray-200 font-medium">Home</a>
+                    <a href="#events" class="hover:text-gray-200 font-medium">Events</a>
+                    <a href="#booking" class="hover:text-gray-200 font-medium">Book Hall</a>
+                    <a href="#dashboard" class="hover:text-gray-200 font-medium">Dashboard</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button class="bg-white text-green-600 px-4 py-2 rounded-full font-medium hover:bg-gray-100 transition">Login</button>
+                    <button class="hidden md:block bg-green-700 text-white px-4 py-2 rounded-full font-medium hover:bg-green-800 transition">Sign Up</button>
+                    <button class="md:hidden text-white">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="gradient-bg text-white py-16">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row items-center">
+                <div class="md:w-1/2 mb-10 md:mb-0">
+                    <h1 class="text-4xl md:text-5xl font-bold mb-4">Manage & Book Events With Ease</h1>
+                    <p class="text-xl mb-8">Discover, create and manage events all in one place. Perfect for organizers and attendees alike.</p>
+                    <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+                        <button class="bg-white text-green-600 px-6 py-3 rounded-full font-bold hover:bg-gray-100 transition">Explore Events</button>
+                        <button class="bg-green-700 text-white px-6 py-3 rounded-full font-bold hover:bg-green-800 transition">Create Event</button>
+                    </div>
+                </div>
+                <div class="md:w-1/2 flex justify-center">
+                    <img src="https://images.unsplash.com/photo-1511578314322-379afb476865?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Event Management" class="rounded-xl shadow-2xl w-full max-w-lg">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Events Section -->
+    <section id="events" class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Upcoming Events</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Event Card 1 -->
+                <div class="event-card bg-white rounded-xl overflow-hidden shadow-lg custom-shadow">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Concert" class="w-full h-48 object-cover">
+                        <div class="absolute top-4 right-4 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold">Music</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 text-gray-800">Summer Music Festival</h3>
+                        <div class="flex items-center text-gray-600 mb-3">
+                            <i class="far fa-calendar-alt mr-2"></i>
+                            <span>June 15, 2023 | 6:00 PM</span>
+                        </div>
+                        <div class="flex items-center text-gray-600 mb-4">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
+                            <span>Central Park, New York</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Join us for the biggest music festival of the summer featuring top artists from around the world.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-green-600 font-bold">$45 - $120</span>
+                            <button class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full text-sm font-medium transition">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Event Card 2 -->
+                <div class="event-card bg-white rounded-xl overflow-hidden shadow-lg custom-shadow">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1531058020387-3be344556be6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Conference" class="w-full h-48 object-cover">
+                        <div class="absolute top-4 right-4 bg-blue-500 text-white px-3 py-1 rounded-full text-xs font-bold">Business</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 text-gray-800">Tech Innovation Summit</h3>
+                        <div class="flex items-center text-gray-600 mb-3">
+                            <i class="far fa-calendar-alt mr-2"></i>
+                            <span>July 22, 2023 | 9:00 AM</span>
+                        </div>
+                        <div class="flex items-center text-gray-600 mb-4">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
+                            <span>Convention Center, San Francisco</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Learn from industry leaders about the latest trends in technology and innovation.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-green-600 font-bold">$99 - $299</span>
+                            <button class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full text-sm font-medium transition">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Event Card 3 -->
+                <div class="event-card bg-white rounded-xl overflow-hidden shadow-lg custom-shadow">
+                    <div class="relative">
+                        <img src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Workshop" class="w-full h-48 object-cover">
+                        <div class="absolute top-4 right-4 bg-purple-500 text-white px-3 py-1 rounded-full text-xs font-bold">Workshop</div>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-bold mb-2 text-gray-800">Photography Masterclass</h3>
+                        <div class="flex items-center text-gray-600 mb-3">
+                            <i class="far fa-calendar-alt mr-2"></i>
+                            <span>August 5, 2023 | 10:00 AM</span>
+                        </div>
+                        <div class="flex items-center text-gray-600 mb-4">
+                            <i class="fas fa-map-marker-alt mr-2"></i>
+                            <span>Creative Space, Los Angeles</span>
+                        </div>
+                        <p class="text-gray-600 mb-4">Learn professional photography techniques from award-winning photographers.</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-green-600 font-bold">$75 - $150</span>
+                            <button class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-full text-sm font-medium transition">Book Now</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-12">
+                <button class="border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-white px-6 py-3 rounded-full font-bold transition">View All Events</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Hall Booking Section -->
+    <section id="booking" class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Book a Venue</h2>
+            
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden max-w-4xl mx-auto">
+                <div class="md:flex">
+                    <div class="md:w-1/2 p-8">
+                        <h3 class="text-2xl font-bold mb-6 text-gray-800">Venue Details</h3>
+                        
+                        <div class="mb-6">
+                            <label class="block text-gray-700 font-medium mb-2">Event Type</label>
+                            <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                                <option>Select Event Type</option>
+                                <option>Conference</option>
+                                <option>Concert</option>
+                                <option>Wedding</option>
+                                <option>Workshop</option>
+                                <option>Exhibition</option>
+                            </select>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label class="block text-gray-700 font-medium mb-2">Venue</label>
+                            <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                                <option>Select Venue</option>
+                                <option>Grand Ballroom (Capacity: 500)</option>
+                                <option>Conference Hall A (Capacity: 200)</option>
+                                <option>Conference Hall B (Capacity: 150)</option>
+                                <option>Outdoor Garden (Capacity: 300)</option>
+                                <option>VIP Lounge (Capacity: 50)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-4 mb-6">
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-2">Start Date</label>
+                                <input type="date" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                            </div>
+                            <div>
+                                <label class="block text-gray-700 font-medium mb-2">End Date</label>
+                                <input type="date" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-6">
+                            <label class="block text-gray-700 font-medium mb-2">Number of Attendees</label>
+                            <input type="number" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Estimated number of attendees">
+                        </div>
+                        
+                        <button class="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg font-bold transition">Check Availability</button>
+                    </div>
+                    
+                    <div class="md:w-1/2 bg-gray-100 p-8 flex items-center justify-center">
+                        <div class="text-center">
+                            <i class="fas fa-calendar-check text-6xl text-green-500 mb-4"></i>
+                            <h3 class="text-xl font-bold mb-2 text-gray-800">Find the Perfect Venue</h3>
+                            <p class="text-gray-600 mb-6">Select from our premium venues equipped with state-of-the-art facilities for your next event.</p>
+                            <div class="flex justify-center space-x-4">
+                                <div class="text-center">
+                                    <div class="bg-green-100 text-green-600 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2">
+                                        <i class="fas fa-wifi"></i>
+                                    </div>
+                                    <span class="text-sm text-gray-600">Free WiFi</span>
+                                </div>
+                                <div class="text-center">
+                                    <div class="bg-green-100 text-green-600 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2">
+                                        <i class="fas fa-utensils"></i>
+                                    </div>
+                                    <span class="text-sm text-gray-600">Catering</span>
+                                </div>
+                                <div class="text-center">
+                                    <div class="bg-green-100 text-green-600 w-12 h-12 rounded-full flex items-center justify-center mx-auto mb-2">
+                                        <i class="fas fa-parking"></i>
+                                    </div>
+                                    <span class="text-sm text-gray-600">Parking</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Seating Arrangement Section -->
+    <section class="py-16 bg-white">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Seating Arrangement</h2>
+            
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
+                    <div class="p-6 border-b border-gray-200">
+                        <h3 class="text-xl font-bold text-gray-800">Concert Hall Seating</h3>
+                        <p class="text-gray-600">Select your preferred seats for the Summer Music Festival</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="hall-container mb-8">
+                            <div class="screen">STAGE</div>
+                            <div class="text-center mb-6" id="seating-map">
+                                <!-- Seats will be generated by JavaScript -->
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+                            <div class="flex items-center">
+                                <div class="seat seat-available mr-2"></div>
+                                <span class="text-sm">Available</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="seat seat-selected mr-2"></div>
+                                <span class="text-sm">Selected</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="seat seat-booked mr-2"></div>
+                                <span class="text-sm">Booked</span>
+                            </div>
+                            <div class="flex items-center">
+                                <div class="seat seat-vip mr-2"></div>
+                                <span class="text-sm">VIP</span>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-gray-100 p-4 rounded-lg mb-6">
+                            <h4 class="font-bold text-gray-800 mb-2">Selected Seats</h4>
+                            <div id="selected-seats" class="text-gray-600">No seats selected yet</div>
+                            <div class="mt-2 font-bold" id="total-price">Total: $0</div>
+                        </div>
+                        
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <span class="text-gray-700 font-medium">Price per seat:</span>
+                                <span class="text-green-600 font-bold ml-2">$45</span>
+                                <span class="text-gray-500 text-sm ml-2">(VIP: $120)</span>
+                            </div>
+                            <button class="bg-green-500 hover:bg-green-600 text-white px-6 py-3 rounded-lg font-bold transition">Proceed to Payment</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Dashboard Section -->
+    <section id="dashboard" class="py-16 bg-gray-50">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12 text-gray-800">Organizer Dashboard</h2>
+            
+            <div class="bg-white rounded-xl shadow-lg overflow-hidden max-w-6xl mx-auto">
+                <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                    <h3 class="text-xl font-bold text-gray-800">My Events</h3>
+                    <button class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium transition">
+                        <i class="fas fa-plus mr-2"></i>Create New Event
+                    </button>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Event</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Venue</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Attendees</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 h-10 w-10">
+                                            <img class="h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="">
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="text-sm font-medium text-gray-900">Summer Music Festival</div>
+                                            <div class="text-sm text-gray-500">Music</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">June 15, 2023</div>
+                                    <div class="text-sm text-gray-500">6:00 PM</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">Central Park</div>
+                                    <div class="text-sm text-gray-500">New York</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">1,245 / 2,000</div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2.5 mt-1">
+                                        <div class="bg-green-600 h-2.5 rounded-full" style="width: 62%"></div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <a href="#" class="text-green-600 hover:text-green-900 mr-3">View</a>
+                                    <a href="#" class="text-blue-600 hover:text-blue-900 mr-3">Edit</a>
+                                    <a href="#" class="text-red-600 hover:text-red-900">Cancel</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 h-10 w-10">
+                                            <img class="h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1531058020387-3be344556be6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="">
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="text-sm font-medium text-gray-900">Tech Innovation Summit</div>
+                                            <div class="text-sm text-gray-500">Conference</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">July 22, 2023</div>
+                                    <div class="text-sm text-gray-500">9:00 AM</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">Convention Center</div>
+                                    <div class="text-sm text-gray-500">San Francisco</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">178 / 200</div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2.5 mt-1">
+                                        <div class="bg-green-600 h-2.5 rounded-full" style="width: 89%"></div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <a href="#" class="text-green-600 hover:text-green-900 mr-3">View</a>
+                                    <a href="#" class="text-blue-600 hover:text-blue-900 mr-3">Edit</a>
+                                    <a href="#" class="text-red-600 hover:text-red-900">Cancel</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="flex-shrink-0 h-10 w-10">
+                                            <img class="h-10 w-10 rounded-full" src="https://images.unsplash.com/photo-1540575467063-178a50c2df87?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="">
+                                        </div>
+                                        <div class="ml-4">
+                                            <div class="text-sm font-medium text-gray-900">Photography Masterclass</div>
+                                            <div class="text-sm text-gray-500">Workshop</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">August 5, 2023</div>
+                                    <div class="text-sm text-gray-500">10:00 AM</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">Creative Space</div>
+                                    <div class="text-sm text-gray-500">Los Angeles</div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="text-sm text-gray-900">42 / 50</div>
+                                    <div class="w-full bg-gray-200 rounded-full h-2.5 mt-1">
+                                        <div class="bg-green-600 h-2.5 rounded-full" style="width: 84%"></div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Active</span>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                    <a href="#" class="text-green-600 hover:text-green-900 mr-3">View</a>
+                                    <a href="#" class="text-blue-600 hover:text-blue-900 mr-3">Edit</a>
+                                    <a href="#" class="text-red-600 hover:text-red-900">Cancel</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="bg-gray-50 px-6 py-4 flex items-center justify-between border-t border-gray-200">
+                    <div class="flex-1 flex justify-between sm:hidden">
+                        <a href="#" class="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">Previous</a>
+                        <a href="#" class="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">Next</a>
+                    </div>
+                    <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                        <div>
+                            <p class="text-sm text-gray-700">
+                                Showing <span class="font-medium">1</span> to <span class="font-medium">3</span> of <span class="font-medium">8</span> results
+                            </p>
+                        </div>
+                        <div>
+                            <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                                <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                    <span class="sr-only">Previous</span>
+                                    <i class="fas fa-chevron-left"></i>
+                                </a>
+                                <a href="#" aria-current="page" class="z-10 bg-green-50 border-green-500 text-green-600 relative inline-flex items-center px-4 py-2 border text-sm font-medium">1</a>
+                                <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">2</a>
+                                <a href="#" class="bg-white border-gray-300 text-gray-500 hover:bg-gray-50 relative inline-flex items-center px-4 py-2 border text-sm font-medium">3</a>
+                                <a href="#" class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                    <span class="sr-only">Next</span>
+                                    <i class="fas fa-chevron-right"></i>
+                                </a>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Create Event Modal -->
+    <div id="create-event-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-screen overflow-y-auto">
+            <div class="p-6 border-b border-gray-200 flex justify-between items-center">
+                <h3 class="text-xl font-bold text-gray-800">Create New Event</h3>
+                <button onclick="closeModal()" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-6">
+                <form>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">Event Name</label>
+                            <input type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Enter event name">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">Event Type</label>
+                            <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                                <option>Select Event Type</option>
+                                <option>Conference</option>
+                                <option>Concert</option>
+                                <option>Workshop</option>
+                                <option>Exhibition</option>
+                                <option>Networking</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">Start Date & Time</label>
+                            <input type="datetime-local" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">End Date & Time</label>
+                            <input type="datetime-local" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                        </div>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label class="block text-gray-700 font-medium mb-2">Venue</label>
+                        <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500">
+                            <option>Select Venue</option>
+                            <option>Grand Ballroom</option>
+                            <option>Conference Hall A</option>
+                            <option>Conference Hall B</option>
+                            <option>Outdoor Garden</option>
+                            <option>VIP Lounge</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label class="block text-gray-700 font-medium mb-2">Description</label>
+                        <textarea rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Enter event description"></textarea>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <label class="block text-gray-700 font-medium mb-2">Event Image</label>
+                        <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md">
+                            <div class="space-y-1 text-center">
+                                <div class="flex text-sm text-gray-600">
+                                    <label for="file-upload" class="relative cursor-pointer bg-white rounded-md font-medium text-green-600 hover:text-green-500 focus-within:outline-none">
+                                        <span>Upload a file</span>
+                                        <input id="file-upload" name="file-upload" type="file" class="sr-only">
+                                    </label>
+                                    <p class="pl-1">or drag and drop</p>
+                                </div>
+                                <p class="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">Ticket Price ($)</label>
+                            <input type="number" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="0.00">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 font-medium mb-2">Capacity</label>
+                            <input type="number" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500" placeholder="Maximum attendees">
+                        </div>
+                    </div>
+                    
+                    <div class="flex justify-end space-x-4">
+                        <button type="button" onclick="closeModal()" class="px-6 py-2 border border-gray-300 rounded-lg font-medium text-gray-700 hover:bg-gray-50 transition">Cancel</button>
+                        <button type="submit" class="px-6 py-2 bg-green-500 text-white rounded-lg font-medium hover:bg-green-600 transition">Create Event</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-bold mb-4 flex items-center">
+                        <i class="fas fa-calendar-alt mr-2"></i>
+                        EventHub
+                    </h3>
+                    <p class="text-gray-400">Your one-stop solution for event management and booking. We connect organizers with attendees seamlessly.</p>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Home</a></li>
+                        <li><a href="#events" class="text-gray-400 hover:text-white transition">Events</a></li>
+                        <li><a href="#booking" class="text-gray-400 hover:text-white transition">Venue Booking</a></li>
+                        <li><a href="#dashboard" class="text-gray-400 hover:text-white transition">Dashboard</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Support</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Help Center</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Contact Us</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Newsletter</h4>
+                    <p class="text-gray-400 mb-4">Subscribe to our newsletter for the latest updates and offers.</p>
+                    <div class="flex">
+                        <input type="email" placeholder="Your email" class="px-4 py-2 rounded-l-lg w-full focus:outline-none text-gray-800">
+                        <button class="bg-green-500 hover:bg-green-600 px-4 py-2 rounded-r-lg transition">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                    <div class="flex space-x-4 mt-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-gray-400 hover:text-white transition"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2023 EventHub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Generate seating map
+        function generateSeatingMap() {
+            const seatingMap = document.getElementById('seating-map');
+            const rows = ['A', 'B', 'C', 'D', 'E', 'F', 'G'];
+            const seatsPerRow = 10;
+            
+            rows.forEach(row => {
+                const rowDiv = document.createElement('div');
+                rowDiv.className = 'mb-4';
+                
+                const rowLabel = document.createElement('span');
+                rowLabel.className = 'text-white mr-4 font-medium';
+                rowLabel.textContent = row;
+                rowDiv.appendChild(rowLabel);
+                
+                for (let i = 1; i <= seatsPerRow; i++) {
+                    const seat = document.createElement('div');
+                    seat.className = 'seat seat-available';
+                    seat.textContent = i;
+                    seat.dataset.row = row;
+                    seat.dataset.number = i;
+                    seat.dataset.price = (row === 'A' || row === 'B') ? 120 : 45;
+                    seat.dataset.type = (row === 'A' || row === 'B') ? 'vip' : 'regular';
+                    
+                    // Randomly book some seats for demo
+                    if (Math.random() > 0.7) {
+                        seat.className = 'seat seat-booked';
+                        seat.dataset.status = 'booked';
+                    } else {
+                        seat.dataset.status = 'available';
+                        seat.addEventListener('click', toggleSeatSelection);
+                    }
+                    
+                    if (seat.dataset.type === 'vip') {
+                        seat.classList.remove('seat-available');
+                        seat.classList.add('seat-vip');
+                    }
+                    
+                    rowDiv.appendChild(seat);
+                }
+                
+                seatingMap.appendChild(rowDiv);
+            });
+        }
+        
+        // Toggle seat selection
+        function toggleSeatSelection(e) {
+            const seat = e.target;
+            const currentStatus = seat.dataset.status;
+            
+            if (currentStatus === 'available') {
+                seat.classList.remove('seat-available', 'seat-vip');
+                seat.classList.add('seat-selected');
+                seat.dataset.status = 'selected';
+            } else if (currentStatus === 'selected') {
+                if (seat.dataset.type === 'vip') {
+                    seat.classList.add('seat-vip');
+                } else {
+                    seat.classList.add('seat-available');
+                }
+                seat.classList.remove('seat-selected');
+                seat.dataset.status = 'available';
+            }
+            
+            updateSelectedSeats();
+        }
+        
+        // Update selected seats display
+        function updateSelectedSeats() {
+            const selectedSeats = document.querySelectorAll('.seat-selected');
+            const selectedSeatsDisplay = document.getElementById('selected-seats');
+            const totalPriceDisplay = document.getElementById('total-price');
+            
+            if (selectedSeats.length === 0) {
+                selectedSeatsDisplay.textContent = 'No seats selected yet';
+                totalPriceDisplay.textContent = 'Total: $0';
+                return;
+            }
+            
+            let seatsList = '';
+            let totalPrice = 0;
+            
+            selectedSeats.forEach(seat => {
+                const row = seat.dataset.row;
+                const number = seat.dataset.number;
+                const price = parseInt(seat.dataset.price);
+                
+                seatsList += `${row}${number}, `;
+                totalPrice += price;
+            });
+            
+            seatsList = seatsList.slice(0, -2); // Remove trailing comma and space
+            selectedSeatsDisplay.textContent = seatsList;
+            totalPriceDisplay.textContent = `Total: $${totalPrice}`;
+        }
+        
+        // Modal functions
+        function openModal() {
+            document.getElementById('create-event-modal').classList.remove('hidden');
+        }
+        
+        function closeModal() {
+            document.getElementById('create-event-modal').classList.add('hidden');
+        }
+        
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            generateSeatingMap();
+            
+            // Add click event to "Create Event" button
+            document.querySelectorAll('[onclick="openModal()"]').forEach(button => {
+                button.addEventListener('click', openModal);
+            });
+        });
+    </script>
+</body>
+</html>
